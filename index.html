@@ -162,16 +162,16 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js"></script>
     <script>
-        
-       const firebaseConfig = {
-  apiKey: "AIzaSyDII6pxvRMxVNWI3AojqrDra_6Nu3ALuNQ",
-  authDomain: "gastosroysilva.firebaseapp.com",
-  projectId: "gastosroysilva",
-  storageBucket: "gastosroysilva.firebasestorage.app",
-  messagingSenderId: "1012649668821",
-  appId: "1:1012649668821:web:97fc5625d547f0b2e1f25c",
-  measurementId: "G-HYK6E0WNSC"
-};
+        // Configura tu Firebase con las credenciales reales
+        const firebaseConfig = {
+            apiKey: "AIzaSyDII6pxvRMxVNWI3AojqrDra_6Nu3ALuNQ",
+            authDomain: "gastosroysilva.firebaseapp.com",
+            databaseURL: "https://gastosroysilva.firebaseio.com", // Verifica y ajusta esta URL en Firebase Console
+            projectId: "gastosroysilva",
+            storageBucket: "gastosroysilva.firebasestorage.app",
+            messagingSenderId: "1012649668821",
+            appId: "1:1012649668821:web:97fc5625d547f0b2e1f25c"
+        };
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
@@ -196,6 +196,9 @@
             userRef.on('value', (snapshot) => {
                 expenses = snapshot.val() || [];
                 updateDashboard();
+            }, (error) => {
+                console.error("Error al cargar datos:", error);
+                alert("Error al conectar con la base de datos. Verifica la URL y las reglas en Firebase Console.");
             });
         }
 
@@ -209,8 +212,12 @@
             if (amount && category && change) {
                 const newExpense = { amount, category, change, date };
                 const userRef = database.ref(`expenses/${currentUser}`);
-                userRef.push(newExpense);
-                this.reset();
+                userRef.push(newExpense).then(() => {
+                    this.reset();
+                }).catch((error) => {
+                    console.error("Error al guardar gasto:", error);
+                    alert("Error al registrar el gasto. Revisa la consola.");
+                });
             }
         });
 
@@ -268,7 +275,10 @@
 
         function deleteExpense(key) {
             const userRef = database.ref(`expenses/${currentUser}/${key}`);
-            userRef.remove();
+            userRef.remove().catch((error) => {
+                console.error("Error al eliminar gasto:", error);
+                alert("Error al eliminar el gasto. Revisa la consola.");
+            });
         }
 
         document.getElementById('exportButton').addEventListener('click', function() {
