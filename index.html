@@ -196,7 +196,15 @@
                 const userKey = `expenses_${currentUser}`;
                 localStorage.setItem(userKey, JSON.stringify(expenses));
                 updateDashboard();
-                this.reset();
+                // Notificar a otras pestañas
+                window.dispatchEvent(new Event('storage'));
+            }
+        });
+
+        // Escuchar cambios en localStorage desde otras pestañas
+        window.addEventListener('storage', () => {
+            if (currentUser) {
+                loadExpenses();
             }
         });
 
@@ -257,6 +265,7 @@
             const userKey = `expenses_${currentUser}`;
             localStorage.setItem(userKey, JSON.stringify(expenses));
             updateDashboard();
+            window.dispatchEvent(new Event('storage')); // Notificar cambio
         }
 
         document.getElementById('exportButton').addEventListener('click', function() {
