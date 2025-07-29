@@ -159,14 +159,14 @@
         </div>
         <footer>Creado por @Roy's Silva-2025</footer>
     </div>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <script>
         // Configura tu Firebase con las credenciales reales
         const firebaseConfig = {
             apiKey: "AIzaSyDII6pxvRMxVNWI3AojqrDra_6Nu3ALuNQ",
             authDomain: "gastosroysilva.firebaseapp.com",
-            databaseURL: "https://gastosroysilva.firebaseio.com", // Verifica y ajusta esta URL en Firebase Console
+            databaseURL: "https://gastosroysilva.firebaseio.com", // Verifica esta URL en Firebase Console
             projectId: "gastosroysilva",
             storageBucket: "gastosroysilva.firebasestorage.app",
             messagingSenderId: "1012649668821",
@@ -179,9 +179,10 @@
         let expenses = [];
 
         function setUser() {
+            console.log("setUser llamado"); // Depuración
             const username = document.getElementById('username').value.trim();
             if (username) {
-                currentUser = username;
+                currentUser = username; // Definir currentUser aquí
                 document.getElementById('userInput').style.display = 'none';
                 document.getElementById('expenseFormGroup').style.display = 'block';
                 document.getElementById('dashboard').style.display = 'block';
@@ -192,14 +193,20 @@
         }
 
         function loadExpenses() {
-            const userRef = database.ref(`expenses/${currentUser}`);
-            userRef.on('value', (snapshot) => {
-                expenses = snapshot.val() || [];
-                updateDashboard();
-            }, (error) => {
-                console.error("Error al cargar datos:", error);
-                alert("Error al conectar con la base de datos. Verifica la URL y las reglas en Firebase Console.");
-            });
+            console.log("loadExpenses llamado para", currentUser); // Depuración
+            if (currentUser) {
+                const userRef = database.ref(`expenses/${currentUser}`);
+                userRef.on('value', (snapshot) => {
+                    console.log("Datos cargados:", snapshot.val()); // Depuración
+                    expenses = snapshot.val() || [];
+                    updateDashboard();
+                }, (error) => {
+                    console.error("Error al cargar datos:", error);
+                    alert("Error al conectar con la base de datos. Verifica la URL y las reglas en Firebase Console.");
+                });
+            } else {
+                console.log("No hay usuario definido"); // Depuración
+            }
         }
 
         document.getElementById('expenseForm').addEventListener('submit', function(e) {
