@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Roy's Silva">
+    <title>Seguimiento de Gastos - Roy's Silva</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 2.5em;
+        }
+        .user-input {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .user-input input {
+            padding: 10px;
+            font-size: 1em;
+            border: 2px solid #3498db;
+            border-radius: 5px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        .user-input input:focus {
+            border-color: #2980b9;
+        }
+        .card {
+            background: #ecf0f1;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            transition: transform 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .form-group, .dashboard {
+            margin-bottom: 20px;
+        }
+        input, select, button {
+            padding: 10px;
+            margin: 5px 0;
+            width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+        button {
+            background: #3498db;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #2980b9;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background: #3498db;
+            color: white;
+        }
+        .delete-btn {
+            background: #e74c3c;
+            padding: 5px 10px;
+            border-radius: 5px;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .delete-btn:hover {
+            background: #c0392b;
+        }
+        canvas {
+            max-width: 100%;
+            margin-top: 10px;
+        }
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+        @media (max-width: 600px) {
+            .container { padding: 10px; }
+            h1 { font-size: 2em; }
+            table { font-size: 0.9em; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Seguimiento de Gastos</h1>
+        <div class="user-input" id="userInput">
+            <input type="text" id="username" placeholder="Ingresa tu nombre o ID" required>
+            <button onclick="setUser()">Iniciar</button>
+        </div>
+        <div class="form-group" id="expenseFormGroup" style="display: none;">
+            <div class="card">
+                <h2>Registrar Gasto</h2>
+                <form id="expenseForm">
+                    <input type="number" id="amount" placeholder="Monto gastado" step="0.01" required>
+                    <select id="category" required>
+                        <option value="" disabled selected>Selecciona una categoría</option>
+                        <option value="Comida">Comida</option>
+                        <option value="Transporte">Transporte</option>
+                        <option value="Entretenimiento">Entretenimiento</option>
+                        <option value="Otros">Otros</option>
+                    </select>
+                    <input type="number" id="change" placeholder="Vuelto recibido" step="0.01" required>
+                    <button type="submit">Registrar</button>
+                </form>
+            </div>
+        </div>
+        <div class="dashboard" id="dashboard" style="display: none;">
+            <div class="card">
+                <h2>Dashboard de Gastos</h2>
+                <button id="exportButton">Exportar Dashboard como Imagen</button>
+                <table id="summaryTable">
+                    <thead><tr><th>Categoría</th><th>Total Gastado</th><th>Cantidad</th><th>Acción</th></tr></thead>
+                    <tbody id="summaryBody"></tbody>
+                </table>
+                <p>Total gastado: $<span id="totalAmount">0.00</span></p>
+                <canvas id="expenseChart" width="400" height="200"></canvas>
+            </div>
+        </div>
+        <footer>Creado por @Roy's Silva-2025</footer>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script>
+        let currentUser = null;
+        let expenses = [];
+
+        function setUser() {
+            const username = document.getElementById('username').value.trim();
+            if (username) {
+                currentUser = username;
+                document.getElementById('userInput').style.display = 'none';
+                document.getElementById('expenseFormGroup').style.display = 'block';
+                document.getElementById('dashboard').style.display = 'block';
+                loadExpenses();
+            } else {
+                alert('Por favor, ingresa un nombre o ID.');
+            }
+        }
+
+        function loadExpenses() {
+            const userKey = `expenses_${currentUser}`;
+            expenses = JSON.parse(localStorage.getItem(userKey)) || [];
+            updateDashboard();
+        }
+
+        document.getElementById('expenseForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const amount = parseFloat(document.getElementById('amount').value);
+            const category = document.getElementById('category').value;
+            const change = parseFloat(document.getElementById('change').value);
+            const date = new Date().toLocaleDateString();
+
+            if (amount && category && change) {
+                expenses.push({ amount, category, change, date });
+                const userKey = `expenses_${currentUser}`;
+                localStorage.setItem(userKey, JSON.stringify(expenses));
+                updateDashboard();
+                this.reset();
+            }
+        });
+
+        function updateDashboard() {
+            const summary = {};
+            let total = 0;
+            expenses.forEach(expense => {
+                if (!summary[expense.category]) summary[expense.category] = { total: 0, count: 0, items: [] };
+                summary[expense.category].total += expense.amount;
+                summary[expense.category].count += 1;
+                summary[expense.category].items.push(expense);
+                total += expense.amount;
+            });
+
+            const tableBody = document.getElementById('summaryBody');
+            tableBody.innerHTML = '';
+            for (const category in summary) {
+                const categoryData = summary[category];
+                categoryData.items.forEach((item, index) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${category}</td>
+                        <td>$${item.amount.toFixed(2)}</td>
+                        <td>1</td>
+                        <td><button class="delete-btn" onclick="deleteExpense('${category}', ${index})">Eliminar</button></td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            }
+            document.getElementById('totalAmount').textContent = total.toFixed(2);
+            updateChart(summary);
+        }
+
+        function updateChart(summary) {
+            const ctx = document.getElementById('expenseChart').getContext('2d');
+            if (window.myChart) window.myChart.destroy();
+            window.myChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: Object.keys(summary),
+                    datasets: [{
+                        data: Object.keys(summary).map(cat => summary[cat].total),
+                        backgroundColor: ['#ff6384', '#36a2eb', '#ffcd56', '#4bc0c0', '#9966ff']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { position: 'top' },
+                        title: { display: true, text: `Distribución de Gastos - ${currentUser}` }
+                    }
+                }
+            });
+        }
+
+        function deleteExpense(category, index) {
+            expenses = expenses.filter((exp, i) => !(exp.category === category && i === index));
+            const userKey = `expenses_${currentUser}`;
+            localStorage.setItem(userKey, JSON.stringify(expenses));
+            updateDashboard();
+        }
+
+        document.getElementById('exportButton').addEventListener('click', function() {
+            html2canvas(document.getElementById('dashboard')).then(canvas => {
+                const link = document.createElement('a');
+                link.download = `dashboard_gastos_${currentUser}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+        });
+    </script>
+</body>
+</html>
