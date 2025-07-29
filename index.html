@@ -159,9 +159,22 @@
         </div>
         <footer>Creado por @Roy's Silva-2025</footer>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js"></script>
     <script>
+        // Configura tu Firebase (reemplaza con tus credenciales de Firebase Console)
+        const firebaseConfig = {
+            apiKey: "TU_API_KEY",
+            authDomain: "TU_AUTH_DOMAIN",
+            databaseURL: "https://TU_PROYECTO.firebaseio.com",
+            projectId: "TU_PROJECT_ID",
+            storageBucket: "TU_STORAGE_BUCKET",
+            messagingSenderId: "TU_MESSAGING_SENDER_ID",
+            appId: "TU_APP_ID"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
         let currentUser = null;
         let expenses = [];
 
@@ -179,9 +192,11 @@
         }
 
         function loadExpenses() {
-            const userKey = `expenses_${currentUser}`;
-            expenses = JSON.parse(localStorage.getItem(userKey)) || [];
-            updateDashboard();
+            const userRef = database.ref(`expenses/${currentUser}`);
+            userRef.on('value', (snapshot) => {
+                expenses = snapshot.val() || [];
+                updateDashboard();
+            });
         }
 
         document.getElementById('expenseForm').addEventListener('submit', function(e) {
@@ -192,30 +207,21 @@
             const date = new Date().toLocaleDateString();
 
             if (amount && category && change) {
-                expenses.push({ amount, category, change, date });
-                const userKey = `expenses_${currentUser}`;
-                localStorage.setItem(userKey, JSON.stringify(expenses));
-                updateDashboard();
-                // Notificar a otras pestañas
-                window.dispatchEvent(new Event('storage'));
-            }
-        });
-
-        // Escuchar cambios en localStorage desde otras pestañas
-        window.addEventListener('storage', () => {
-            if (currentUser) {
-                loadExpenses();
+                const newExpense = { amount, category, change, date };
+                const userRef = database.ref(`expenses/${currentUser}`);
+                userRef.push(newExpense);
+                this.reset();
             }
         });
 
         function updateDashboard() {
             const summary = {};
             let total = 0;
-            expenses.forEach(expense => {
+            expenses.forEach((expense, index) => {
                 if (!summary[expense.category]) summary[expense.category] = { total: 0, count: 0, items: [] };
                 summary[expense.category].total += expense.amount;
                 summary[expense.category].count += 1;
-                summary[expense.category].items.push(expense);
+                summary[expense.category].items.push({ ...expense, index });
                 total += expense.amount;
             });
 
@@ -223,13 +229,13 @@
             tableBody.innerHTML = '';
             for (const category in summary) {
                 const categoryData = summary[category];
-                categoryData.items.forEach((item, index) => {
+                categoryData.items.forEach((item) => {
                     const row = document.createElement('tr');
                     row.innerHTML = `
                         <td>${category}</td>
                         <td>$${item.amount.toFixed(2)}</td>
                         <td>1</td>
-                        <td><button class="delete-btn" onclick="deleteExpense('${category}', ${index})">Eliminar</button></td>
+                        <td><button class="delete-btn" onclick="deleteExpense('${item.index}')">Eliminar</button></td>
                     `;
                     tableBody.appendChild(row);
                 });
@@ -260,12 +266,9 @@
             });
         }
 
-        function deleteExpense(category, index) {
-            expenses = expenses.filter((exp, i) => !(exp.category === category && i === index));
-            const userKey = `expenses_${currentUser}`;
-            localStorage.setItem(userKey, JSON.stringify(expenses));
-            updateDashboard();
-            window.dispatchEvent(new Event('storage')); // Notificar cambio
+        function deleteExpense(key) {
+            const userRef = database.ref(`expenses/${currentUser}/${key}`);
+            userRef.remove();
         }
 
         document.getElementById('exportButton').addEventListener('click', function() {
@@ -277,5 +280,7 @@
             });
         });
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </body>
 </html>
