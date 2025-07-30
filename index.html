@@ -1,34 +1,37 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>MiniMarket Online</title>
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
 </head>
 <body>
   <header>
-    <h1>🛒 Mi MiniMarket</h1>
+    <h1>🛒 MiniMarket Online</h1>
   </header>
 
-  <main>
-    <section class="form-section">
-      <h2>Agregar Producto</h2>
-      <form id="productForm">
-        <input type="text" id="name" placeholder="Nombre del producto" required />
-        <input type="text" id="description" placeholder="Descripción" required />
-        <input type="number" id="precio" placeholder="Precio" required />
-        <button type="submit">Guardar</button>
-      </form>
-    </section>
+  <!-- Carrusel de productos -->
+  <section class="carousel">
+    <div class="carousel-container" id="carousel-container">
+      <!-- Productos se insertan aquí dinámicamente -->
+    </div>
+  </section>
 
-    <section class="carousel-section">
-      <h2>Productos</h2>
-      <div class="carousel" id="productCarousel"></div>
-    </section>
-  </main>
+  <!-- Formulario para agregar productos -->
+  <section class="add-product">
+    <h2>Agregar producto</h2>
+    <form id="product-form">
+      <input type="text" id="name" placeholder="Nombre del producto" required>
+      <input type="text" id="description" placeholder="Descripción" required>
+      <input type="number" id="price" placeholder="Precio" step="0.01" required>
+      <button type="submit">Guardar</button>
+    </form>
+  </section>
 
-  <script src="firebase-config.js"></script>
-  <script src="script.js"></script>
+  <!-- Scripts -->
+  <script type="module" src="firebase-config.js"></script>
+  <script type="module" src="script.js"></script>
 </body>
 </html>
