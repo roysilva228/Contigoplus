@@ -1,18 +1,22 @@
-// Importa Firebase
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+// Importa desde Firebase
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getFirestore,
+  collection,
+  getDocs,
+  addDoc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-// Tu configuración de Firebase
 const firebaseConfig = {
-  apiKey: "AIzaSyCpgoaw-lnE70CzGZBl2P2TZdeXK1RGjs8",
-  authDomain: "minimarket-app-c551b.firebaseapp.com",
-  projectId: "minimarket-app-c551b",
-  storageBucket: "minimarket-app-c551b.appspot.com",
-  messagingSenderId: "1022324994134",
-  appId: "1:1022324994134:web:66b58be5ec8a5e166a4bf7",
-  measurementId: "G-FZR0HL0ZRZ"
+  apiKey: "TU_API_KEY",
+  authDomain: "TU_DOMINIO",
+  projectId: "TU_PROJECT_ID",
+  storageBucket: "TU_BUCKET",
+  messagingSenderId: "TU_SENDER_ID",
+  appId: "TU_APP_ID"
 };
 
-// Inicializar Firebase
 const app = initializeApp(firebaseConfig);
-export const db = getFirestore(app);
+const db = getFirestore(app);
+
+export { db, collection, getDocs, addDoc };
