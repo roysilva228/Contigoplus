@@ -13,7 +13,7 @@ const productsCol = collection(db, "products");
 
 let editId = null;
 
-// Agregar o actualizar producto
+// Guardar o actualizar producto
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -22,7 +22,6 @@ form.addEventListener("submit", async (e) => {
   const description = document.getElementById("description").value;
 
   if (editId) {
-    // Actualizar producto existente
     const ref = doc(db, "products", editId);
     await updateDoc(ref, {
       name,
@@ -31,7 +30,6 @@ form.addEventListener("submit", async (e) => {
     });
     editId = null;
   } else {
-    // Agregar nuevo producto
     await addDoc(productsCol, {
       name,
       precio: price,
@@ -42,28 +40,32 @@ form.addEventListener("submit", async (e) => {
   form.reset();
 });
 
-// Mostrar productos en tiempo real
+// Mostrar productos
 onSnapshot(productsCol, (snapshot) => {
   list.innerHTML = "";
   snapshot.forEach(docSnap => {
     const data = docSnap.data();
     const id = docSnap.id;
 
+    const safeName = encodeURIComponent(data.name);
+    const safePrice = encodeURIComponent(data.precio);
+    const safeDesc = encodeURIComponent(data.description);
+
     const div = document.createElement("div");
     div.className = "product";
     div.innerHTML = `
-      <strong>${data.name}</strong> - S/.${data.precio} <br>
+      <strong>${data.name}</strong> - S/.${data.precio}<br>
       <em>${data.description}</em><br>
-      <button onclick="editProduct('${id}', \`${data.name}\`, \`${data.precio}\`, \`${data.description}\`)">Editar</button>
+      <button onclick="editProduct('${id}', '${safeName}', '${safePrice}', '${safeDesc}')">Editar</button>
     `;
     list.appendChild(div);
   });
 });
 
-// Hacer accesible la función de edición desde el DOM
-window.editProduct = (id, name, precio, description) => {
-  document.getElementById("name").value = name;
-  document.getElementById("price").value = precio;
-  document.getElementById("description").value = description;
+// Editar producto
+window.editProduct = (id, name, price, description) => {
+  document.getElementById("name").value = decodeURIComponent(name);
+  document.getElementById("price").value = decodeURIComponent(price);
+  document.getElementById("description").value = decodeURIComponent(description);
   editId = id;
 };
