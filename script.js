@@ -2,15 +2,18 @@ import { db } from './firebase-config.js';
 import {
   collection,
   addDoc,
-  getDocs,
-  onSnapshot
+  onSnapshot,
+  updateDoc,
+  doc
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const form = document.getElementById("product-form");
 const list = document.getElementById("product-list");
 const productsCol = collection(db, "products");
 
-// Agregar producto
+let editId = null;
+
+// Agregar o actualizar producto
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -18,11 +21,15 @@ form.addEventListener("submit", async (e) => {
   const price = parseFloat(document.getElementById("price").value);
   const description = document.getElementById("description").value;
 
-  await addDoc(productsCol, {
-    name,
-    precio: price,
-    description
-  });
+  if (editId) {
+    // Modo edición
+    const ref = doc(db, "products", editId);
+    await updateDoc(ref, { name, precio: price, description });
+    editId = null;
+  } else {
+    // Modo agregar
+    await addDoc(productsCol, { name, precio: price, description });
+  }
 
   form.reset();
 });
@@ -30,11 +37,25 @@ form.addEventListener("submit", async (e) => {
 // Mostrar productos en tiempo real
 onSnapshot(productsCol, (snapshot) => {
   list.innerHTML = "";
-  snapshot.forEach(doc => {
-    const data = doc.data();
+  snapshot.forEach(docSnap => {
+    const data = docSnap.data();
+    const id = docSnap.id;
+
     const div = document.createElement("div");
     div.className = "product";
-    div.innerHTML = `<strong>${data.name}</strong> - S/.${data.precio} <br><em>${data.description}</em>`;
+    div.innerHTML = `
+      <strong>${data.name}</strong> - S/.${data.precio} <br>
+      <em>${data.description}</em><br>
+      <button onclick="editProduct('${id}', \`${data.name}\`, \`${data.precio}\`, \`${data.description}\`)">Editar</button>
+    `;
     list.appendChild(div);
   });
 });
+
+// Hacer la función accesible globalmente
+window.editProduct = (id, name, precio, description) => {
+  document.getElementById("name").value = name;
+  document.getElementById("price").value = precio;
+  document.getElementById("description").value = description;
+  editId = id;
+};
