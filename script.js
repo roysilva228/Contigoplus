@@ -22,13 +22,21 @@ form.addEventListener("submit", async (e) => {
   const description = document.getElementById("description").value;
 
   if (editId) {
-    // Modo edición
+    // Actualizar producto existente
     const ref = doc(db, "products", editId);
-    await updateDoc(ref, { name, precio: price, description });
+    await updateDoc(ref, {
+      name,
+      precio: price,
+      description
+    });
     editId = null;
   } else {
-    // Modo agregar
-    await addDoc(productsCol, { name, precio: price, description });
+    // Agregar nuevo producto
+    await addDoc(productsCol, {
+      name,
+      precio: price,
+      description
+    });
   }
 
   form.reset();
@@ -52,7 +60,7 @@ onSnapshot(productsCol, (snapshot) => {
   });
 });
 
-// Hacer la función accesible globalmente
+// Hacer accesible la función de edición desde el DOM
 window.editProduct = (id, name, precio, description) => {
   document.getElementById("name").value = name;
   document.getElementById("price").value = precio;
