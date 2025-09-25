@@ -1,12 +1,13 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Poppins', sans-serif; /* Nueva tipografía */
     background-color: #f0f2f5;
     color: #333;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
     margin: 0;
+    padding: 20px 0;
 }
 
 #game-container {
@@ -15,13 +16,33 @@ body {
     background: white;
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 4px Bpx rgba(0,0,0,0.1);
     text-align: center;
 }
 
 h1 {
     color: #4A90E2;
 }
+
+/* --- NUEVOS ESTILOS --- */
+#resources-panel {
+    display: flex;
+    justify-content: space-around;
+    padding: 15px;
+    background: #f0f0f0;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+#weather-icon {
+    margin-right: 8px; /* Espacio entre el icono y el texto */
+    width: 20px; /* Ancho fijo para el icono */
+    display: inline-block; /* Para que el ancho funcione */
+    text-align: center;
+}
+/* --- FIN NUEVOS ESTILOS --- */
 
 #info-panel {
     background-color: #f9f9f9;
@@ -33,7 +54,9 @@ h1 {
 }
 
 #info-panel p {
-    margin: 5px 0;
+    margin: 8px 0;
+    display: flex;
+    align-items: center;
 }
 
 #city-map {
@@ -42,8 +65,9 @@ h1 {
     gap: 10px;
     padding: 20px;
     border-radius: 8px;
-    background-color: #a5d6a7; /* Color base 'soleado' */
-    transition: background-color 0.5s ease;
+    background-color: #a5d6a7;
+    transition: background-color 1s ease; /* Transición suave */
+    margin-bottom: 20px;
 }
 
 .building {
@@ -58,3 +82,23 @@ h1 {
     background-color: #4caf50;
     border-radius: 4px;
 }
+
+/* --- NUEVOS ESTILOS --- */
+#build-house-btn {
+    width: 100%;
+    padding: 15px;
+    font-size: 16px;
+    font-weight: bold;
+    font-family: 'Poppins', sans-serif;
+    color: white;
+    background-color: #4CAF50; /* Verde */
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#build-house-btn:hover {
+    background-color: #45a049; /* Verde más oscuro */
+}
+/* --- FIN NUEVOS ESTILOS --- */
