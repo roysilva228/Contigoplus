@@ -1,24 +1,32 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MiniMarket</title>
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Tycoon - Prototipo</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>MiniMarket</h1>
 
-  <form id="product-form">
-    <input type="text" id="name" placeholder="Nombre del producto" required>
-    <input type="number" id="price" placeholder="Precio" required>
-    <input type="text" id="description" placeholder="Descripción">
-    <button type="submit">Guardar producto</button>
-  </form>
+    <div id="game-container">
+        <h1>API Tycoon 🌆</h1>
+        
+        <div id="info-panel">
+            <h2>Datos del Mundo Real</h2>
+            <p><strong>Ubicación:</strong> <span id="location">Cargando...</span></p>
+            <p><strong>Temperatura:</strong> <span id="temperature">--</span> °C</p>
+            <p><strong>Clima:</strong> <span id="weather-description">--</span></p>
+            <p><strong>Efecto en la ciudad:</strong> <span id="game-effect">--</span></p>
+        </div>
 
-  <div id="product-list"></div>
+        <div id="city-map">
+            <div class="building"></div>
+            <div class="building"></div>
+            <div class="park"></div>
+            <div class="building"></div>
+        </div>
+    </div>
 
-  <script type="module" src="firebase-config.js"></script>
-  <script type="module" src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
