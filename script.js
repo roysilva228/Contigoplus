@@ -3,7 +3,7 @@ window.addEventListener('load', () => {
     // Coordenadas de Lima, Perú. Puedes cambiarlas por cualquier otra ciudad.
     const lat = -12.0464;
     const lon = -77.0428;
-    const apiKey = "TU_API_KEY"; // <-- ¡PEGA TU API KEY AQUÍ!
+    const apiKey = "a5059de5f58e8bbea36df155a5ea20c5"; // <-- ¡PEGA TU API KEY AQUÍ!
     const apiUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric&lang=es`;
 
     // Elementos del HTML que vamos a actualizar
@@ -78,3 +78,4 @@ window.addEventListener('load', () => {
         cityMapEl.style.backgroundColor = cityColor;
     }
 });
+
