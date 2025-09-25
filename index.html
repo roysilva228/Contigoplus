@@ -33,13 +33,17 @@
         </div>
 
         <div id="city-map">
-            <div class="building"></div>
-            <div class="building"></div>
-            <div class="park"></div>
-            <div class="building"></div>
+            <div class="building" data-status="empty"></div>
+            <div class="building" data-status="empty"></div>
+            <div class="park" data-status="empty"></div>
+            <div class="building" data-status="empty"></div>
         </div>
-
-        <button id="build-house-btn">Construir Casa (Costo: $200)</button>
+        
+        <div id="action-buttons">
+            <button id="build-house-btn">Construir Casa (Costo: $200)</button>
+            <button id="save-btn" class="secondary">Guardar Partida</button>
+            <button id="load-btn" class="secondary">Cargar Partida</button>
+        </div>
     </div>
 
     <script src="script.js"></script>
