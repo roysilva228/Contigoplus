@@ -3,49 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>API Tycoon - Prototipo Mejorado</title>
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
-    
+    <title>Juego del Ahorcado</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <div class="container">
+        <h1>El Ahorcado 🔪</h1>
 
-    <div id="game-container">
-        <h1>API Tycoon 🌆</h1>
-        
-        <div id="resources-panel">
-            <span>💰 Dinero: <span id="money-display">1000</span></span>
-            <span>⚡ Energía: <span id="energy-display">500</span></span>
-            <span>👤 Población: <span id="population-display">100</span></span>
-        </div>
-
-        <div id="info-panel">
-            <h2>Datos del Mundo Real</h2>
-            <p><strong>Ubicación:</strong> <span id="location">Cargando...</span></p>
-            <p><strong>Temperatura:</strong> <span id="temperature">--</span> °C</p>
-            <p><strong>Clima:</strong> <span id="weather-icon"></span> <span id="weather-description">--</span></p>
-            <p><strong>Efecto en la ciudad:</strong> <span id="game-effect">--</span></p>
-        </div>
-
-        <div id="city-map">
-            <div class="building" data-status="empty"></div>
-            <div class="building" data-status="empty"></div>
-            <div class="park" data-status="empty"></div>
-            <div class="building" data-status="empty"></div>
+        <div id="horca-area">
+            <div id="cuerpo-entero" data-fallos="0">
+                <div id="cabeza" class="parte-oculta"></div>
+                <div id="cuerpo" class="parte-oculta"></div>
+                <div id="brazo-izquierdo" class="parte-oculta"></div>
+                <div id="brazo-derecho" class="parte-oculta"></div>
+                <div id="pierna-izquierda" class="parte-oculta"></div>
+                <div id="pierna-derecha" class="parte-oculta"></div>
+            </div>
+            <div id="base"></div>
         </div>
         
-        <div id="action-buttons">
-            <button id="build-house-btn">Construir Casa (Costo: $200)</button>
-            <button id="save-btn" class="secondary">Guardar Partida</button>
-            <button id="load-btn" class="secondary">Cargar Partida</button>
-        </div>
+        <div id="palabra-secreta" class="palabra-secreta">
+            </div>
+
+        <div id="mensaje-juego" class="mensaje">¡Adivina la palabra!</div>
+        <div id="letras-usadas">Letras probadas: <span></span></div>
+        
+        <div id="teclado-letras" class="teclado">
+            </div>
+        
+        <button id="reiniciar-btn" class="boton-reiniciar">Reiniciar Juego</button>
     </div>
-
+    
     <script src="script.js"></script>
 </body>
 </html>
