@@ -1,138 +1,171 @@
-window.addEventListener('load', () => {
-    // --- Variables de Recursos del Juego ---
-    let money = 1000;
-    let energy = 500;
-    let population = 100;
+// --- VARIABLES DE ESTADO DEL JUEGO ---
+const PALABRAS = ['PROGRAMACION', 'JAVASCRIPT', 'GITHUB', 'FRONTEND', 'CSS'];
+let palabraSecreta = '';
+let palabraAdivinada = []; // Array que guarda las letras adivinadas, ej: ['P', '_', 'O', 'G', ...]
+let fallos = 0;
+const MAX_FALLOS = 6;
+let letrasUsadas = [];
+let juegoTerminado = false;
 
-    // --- Elementos del HTML ---
-    const moneyDisplay = document.getElementById('money-display');
-    const energyDisplay = document.getElementById('energy-display');
-    const populationDisplay = document.getElementById('population-display');
-    const locationEl = document.getElementById('location');
-    const tempEl = document.getElementById('temperature');
-    const weatherEl = document.getElementById('weather-description');
-    const effectEl = document.getElementById('game-effect');
-    const cityMapEl = document.getElementById('city-map');
-    const weatherIconEl = document.getElementById('weather-icon');
-    const buildBtn = document.getElementById('build-house-btn');
-    const saveBtn = document.getElementById('save-btn');
-    const loadBtn = document.getElementById('load-btn');
+// Elementos del DOM
+const palabraElemento = document.getElementById('palabra-secreta');
+const mensajeElemento = document.getElementById('mensaje-juego');
+const letrasUsadasElemento = document.querySelector('#letras-usadas span');
+const tecladoElemento = document.getElementById('teclado-letras');
+const reiniciarBtn = document.getElementById('reiniciar-btn');
+const partesAhorcado = [
+    document.getElementById('cabeza'),
+    document.getElementById('cuerpo'),
+    document.getElementById('brazo-izquierdo'),
+    document.getElementById('brazo-derecho'),
+    document.getElementById('pierna-izquierda'),
+    document.getElementById('pierna-derecha')
+];
 
-    // --- API de Clima ---
-    const lat = -12.0464;
-    const lon = -77.0428;
-    const apiKey = "a5059de5f58e8bbea36df155a5ea20c5";
-    const apiUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric&lang=es`;
+// --- FUNCIONES DE INICIO Y REINICIO ---
 
-    fetch(apiUrl)
-        .then(response => response.ok ? response.json() : Promise.reject('Error de API'))
-        .then(data => {
-            locationEl.textContent = data.name;
-            tempEl.textContent = data.main.temp.toFixed(1);
-            weatherEl.textContent = data.weather[0].description.charAt(0).toUpperCase() + data.weather[0].description.slice(1);
-            updateCityBasedOnWeather(data.weather[0].main);
-        })
-        .catch(error => {
-            console.error('Hubo un problema:', error);
-            locationEl.textContent = "Error al cargar datos.";
-            locationEl.style.color = 'red';
-        });
+function seleccionarPalabra() {
+    const indice = Math.floor(Math.random() * PALABRAS.length);
+    palabraSecreta = PALABRAS[indice];
+    palabraAdivinada = Array(palabraSecreta.length).fill('_');
+}
 
-    function updateCityBasedOnWeather(weatherMain) {
-        let effectText = "";
-        let cityColor = "";
-        let iconHTML = "";
+function inicializarJuego() {
+    juegoTerminado = false;
+    fallos = 0;
+    letrasUsadas = [];
 
-        switch (weatherMain) {
-            case 'Clear':
-                effectText = "Día soleado. ¡El turismo aumenta los ingresos!"; cityColor = "#a5d6a7"; iconHTML = '<i class="fas fa-sun" style="color: #fdd835;"></i>'; money += 100; energy += 50;
-                break;
-            case 'Clouds':
-                effectText = "Está nublado. La producción de energía solar baja."; cityColor = "#bdbdbd"; iconHTML = '<i class="fas fa-cloud" style="color: #90a4ae;"></i>'; energy -= 10;
-                break;
-            case 'Rain': case 'Drizzle':
-                effectText = "Está lloviendo. El consumo de energía aumenta."; cityColor = "#90a4ae"; iconHTML = '<i class="fas fa-cloud-showers-heavy" style="color: #447799;"></i>'; money -= 20; energy -= 30;
-                break;
-            case 'Thunderstorm':
-                effectText = "¡Tormenta eléctrica! Riesgo de apagones."; cityColor = "#616161"; iconHTML = '<i class="fas fa-bolt" style="color: #ffeb3b;"></i>'; energy -= 100;
-                break;
-            default:
-                effectText = "El clima es estable."; cityColor = "#b0bec5"; iconHTML = '<i class="fas fa-smog" style="color: #78909c;"></i>';
-                break;
-        }
-        
-        effectEl.textContent = effectText;
-        cityMapEl.style.backgroundColor = cityColor;
-        weatherIconEl.innerHTML = iconHTML;
-        updateUI(); // Centralizamos la actualización de la UI
+    // 1. Reiniciar la palabra
+    seleccionarPalabra();
+    
+    // 2. Limpiar la interfaz
+    palabraElemento.innerHTML = '';
+    mensajeElemento.textContent = '¡Adivina la palabra!';
+    mensajeElemento.className = 'mensaje';
+    letrasUsadasElemento.textContent = '';
+    reiniciarBtn.style.display = 'none';
+    
+    // 3. Ocultar partes del ahorcado
+    partesAhorcado.forEach(parte => parte.classList.remove('parte-visible'));
+
+    // 4. Crear el teclado (solo se hace una vez al inicio, luego se reinicia)
+    if (tecladoElemento.children.length === 0) {
+        crearTeclado();
+    } else {
+        // Habilitar todos los botones al reiniciar
+        Array.from(tecladoElemento.children).forEach(btn => btn.disabled = false);
+    }
+    
+    // 5. Actualizar la vista inicial
+    actualizarPalabraDOM();
+}
+
+// --- MANEJO DEL TECLADO ---
+
+function crearTeclado() {
+    for (let i = 65; i <= 90; i++) {
+        const letra = String.fromCharCode(i); // Convertir código ASCII a letra (A-Z)
+        const boton = document.createElement('button');
+        boton.textContent = letra;
+        boton.className = 'letra-btn';
+        boton.addEventListener('click', () => manejarAdivinanza(letra));
+        tecladoElemento.appendChild(boton);
+    }
+}
+
+// --- LÓGICA PRINCIPAL DEL JUEGO ---
+
+function manejarAdivinanza(letra) {
+    if (juegoTerminado || letrasUsadas.includes(letra)) {
+        return; // Ignorar si el juego terminó o la letra ya se usó
     }
 
-    // --- Lógica del Juego ---
-    buildBtn.addEventListener('click', () => {
-        const cost = 200;
-        const emptySlot = document.querySelector('.building[data-status="empty"]');
-        
-        if (!emptySlot) {
-            alert("¡No hay más espacio para construir!");
-            return;
-        }
+    letrasUsadas.push(letra);
+    let acierto = false;
 
-        if (money >= cost) {
-            money -= cost;
-            population += 10;
-            emptySlot.dataset.status = 'built'; // Cambia el estado del lote a construido
-            updateUI();
-        } else {
-            alert("¡No tienes suficiente dinero para construir una casa!");
-        }
-    });
-
-    // --- NUEVO: Lógica para Guardar y Cargar ---
-    saveBtn.addEventListener('click', saveGame);
-    loadBtn.addEventListener('click', loadGame);
-
-    function saveGame() {
-        const buildingStatuses = [];
-        document.querySelectorAll('.building').forEach(b => {
-            buildingStatuses.push(b.dataset.status);
-        });
-
-        const saveData = {
-            money: money,
-            energy: energy,
-            population: population,
-            buildings: buildingStatuses
-        };
-        localStorage.setItem('apiTycoonSave', JSON.stringify(saveData));
-        alert('¡Partida guardada!');
-    }
-
-    function loadGame() {
-        const savedData = JSON.parse(localStorage.getItem('apiTycoonSave'));
-        if (savedData) {
-            money = savedData.money;
-            energy = savedData.energy;
-            population = savedData.population;
-
-            const buildingElements = document.querySelectorAll('.building');
-            buildingElements.forEach((building, index) => {
-                building.dataset.status = savedData.buildings[index] || 'empty';
-            });
-            
-            updateUI();
-            alert('¡Partida cargada!');
-        } else {
-            alert('No se encontró ninguna partida guardada.');
+    // 1. Revisar si la letra está en la palabra secreta
+    for (let i = 0; i < palabraSecreta.length; i++) {
+        if (palabraSecreta[i] === letra) {
+            palabraAdivinada[i] = letra; // Reemplazar el guion con la letra
+            acierto = true;
         }
     }
+    
+    // 2. Manejar fallo
+    if (!acierto) {
+        fallos++;
+        actualizarHorcaDOM();
+    }
+    
+    // 3. Actualizar la interfaz
+    actualizarPalabraDOM();
+    actualizarLetrasUsadasDOM();
+    
+    // Deshabilitar el botón de la letra usada
+    const botonUsado = Array.from(tecladoElemento.children).find(btn => btn.textContent === letra);
+    if (botonUsado) {
+        botonUsado.disabled = true;
+    }
+    
+    // 4. Comprobar si terminó el juego
+    comprobarFinDelJuego();
+}
 
-    // Función para cargar automáticamente al iniciar
-    loadGame(); 
+// --- FUNCIONES DE ACTUALIZACIÓN DEL DOM ---
 
-    // --- Función central para actualizar la UI ---
-    function updateUI() {
-        moneyDisplay.textContent = money;
-        energyDisplay.textContent = energy;
-        populationDisplay.textContent = population;
+function actualizarPalabraDOM() {
+    // Une el array de letras adivinadas y lo muestra con espacios
+    palabraElemento.textContent = palabraAdivinada.join(' ');
+}
+
+function actualizarLetrasUsadasDOM() {
+    letrasUsadasElemento.textContent = letrasUsadas.join(', ');
+}
+
+function actualizarHorcaDOM() {
+    // Muestra una parte del cuerpo por cada fallo
+    if (fallos > 0 && fallos <= MAX_FALLOS) {
+        // fallos - 1 porque el array empieza en 0
+        partesAhorcado[fallos - 1].classList.add('parte-visible');
+    }
+}
+
+function deshabilitarTeclado() {
+    Array.from(tecladoElemento.children).forEach(btn => btn.disabled = true);
+}
+
+function comprobarFinDelJuego() {
+    // Comprobar Victoria
+    if (!palabraAdivinada.includes('_')) {
+        juegoTerminado = true;
+        mensajeElemento.textContent = '¡Felicidades! ¡GANASTE! 🎉';
+        mensajeElemento.classList.add('victoria');
+        deshabilitarTeclado();
+        reiniciarBtn.style.display = 'block';
+        return;
+    }
+
+    // Comprobar Derrota
+    if (fallos >= MAX_FALLOS) {
+        juegoTerminado = true;
+        mensajeElemento.textContent = `¡PERDISTE! La palabra era: ${palabraSecreta}`;
+        mensajeElemento.classList.add('derrota');
+        deshabilitarTeclado();
+        reiniciarBtn.style.display = 'block';
+    }
+}
+
+// --- EVENT LISTENERS ---
+reiniciarBtn.addEventListener('click', inicializarJuego);
+
+// Permitir que el usuario escriba letras con el teclado físico
+document.addEventListener('keydown', (event) => {
+    // Convertir a mayúsculas y validar que sea una letra A-Z
+    const letra = event.key.toUpperCase();
+    if (letra.length === 1 && letra >= 'A' && letra <= 'Z') {
+        manejarAdivinanza(letra);
     }
 });
+
+// Iniciar el juego al cargar la página
+document.addEventListener('DOMContentLoaded', inicializarJuego);
