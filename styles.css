@@ -1,141 +1,183 @@
 body {
-    font-family: 'Poppins', sans-serif;
-    background-color: #f0f2f5;
-    color: #333;
+    font-family: Arial, sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+    background-color: #282c34;
+    color: #fff;
     margin: 0;
-    padding: 20px 0;
 }
 
-#game-container {
+.container {
+    background-color: #383c4a;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    text-align: center;
     width: 90%;
     max-width: 600px;
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    text-align: center;
 }
 
 h1 {
-    color: #4A90E2;
+    color: #61dafb;
 }
 
-#resources-panel {
+/* --- ESTILOS DE LA HORCA --- */
+#horca-area {
+    position: relative;
+    width: 150px;
+    height: 200px;
+    margin: 20px auto 40px auto;
+    border-bottom: 5px solid #fff;
+}
+
+#base {
+    position: absolute;
+    top: 0;
+    left: 75px;
+    height: 100%;
+    width: 5px;
+    background: #fff;
+}
+
+#base::before { /* Viga superior */
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100px;
+    height: 5px;
+    background: #fff;
+}
+
+#base::after { /* Cuerda */
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 100px;
+    width: 5px;
+    height: 20px;
+    background: #fff;
+}
+
+/* --- ESTILOS DEL CUERPO --- */
+.parte-oculta {
+    position: absolute;
+    background-color: #ff4757; /* Color de la figura */
+    border-radius: 50%; /* Para la cabeza */
+    transition: opacity 0.3s;
+    opacity: 0; /* Oculto por defecto */
+}
+
+/* Posicionamiento de las partes */
+#cabeza {
+    width: 30px;
+    height: 30px;
+    top: 20px;
+    left: 100px;
+    border: 2px solid #ff4757;
+}
+
+#cuerpo {
+    width: 5px;
+    height: 50px;
+    top: 50px;
+    left: 113px; /* 100px (viga) + 5px (cuerda) + 5px (centrar) */
+    background: #ff4757;
+    border-radius: 0;
+}
+
+#brazo-izquierdo, #brazo-derecho {
+    width: 5px;
+    height: 30px;
+    top: 60px;
+    left: 113px;
+    background: #ff4757;
+    transform-origin: top;
+    border-radius: 0;
+}
+#brazo-izquierdo { transform: rotate(45deg); left: 100px; }
+#brazo-derecho { transform: rotate(-45deg); left: 126px; }
+
+#pierna-izquierda, #pierna-derecha {
+    width: 5px;
+    height: 40px;
+    top: 100px;
+    left: 113px;
+    background: #ff4757;
+    transform-origin: top;
+    border-radius: 0;
+}
+#pierna-izquierda { transform: rotate(20deg); left: 105px; }
+#pierna-derecha { transform: rotate(-20deg); left: 121px; }
+
+
+/* Clase que JS añade para hacer visible la parte */
+.parte-visible {
+    opacity: 1;
+}
+
+/* --- ESTILOS DEL JUEGO --- */
+.palabra-secreta {
+    font-size: 2em;
+    letter-spacing: 15px;
+    margin-bottom: 30px;
+    min-height: 40px;
+}
+
+.teclado {
     display: flex;
-    justify-content: space-around;
-    padding: 15px;
-    background: #f0f0f0;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    font-weight: bold;
-}
-
-#weather-icon {
-    margin-right: 8px;
-    width: 20px;
-    display: inline-block;
-    text-align: center;
-}
-
-#info-panel {
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 15px;
-    margin-bottom: 20px;
-    text-align: left;
-}
-
-#info-panel p {
-    margin: 8px 0;
-    display: flex;
-    align-items: center;
-}
-
-#city-map {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-    padding: 20px;
-    border-radius: 8px;
-    background-color: #a5d6a7;
-    transition: background-color 1s ease;
-    margin-bottom: 20px;
-}
-
-.building {
-    height: 80px;
-    background-color: #757575; /* Color de lote vacío */
-    border: 2px solid #424242;
-    border-radius: 4px;
-    transition: background-color 0.5s ease;
-}
-
-/* --- NUEVO: Estilo para un edificio construido --- */
-.building[data-status="built"] {
-    background-color: #a1887f; /* Color café como una casa */
-    display: flex;
+    flex-wrap: wrap;
     justify-content: center;
-    align-items: center;
-    font-size: 3em;
-    color: rgba(255, 255, 255, 0.6);
+    gap: 5px;
+    margin-top: 20px;
 }
 
-.building[data-status="built"]::before {
-    font-family: "Font Awesome 6 Free";
-    font-weight: 900;
-    content: "\f015"; /* Icono de casa de Font Awesome */
-}
-/* --- FIN NUEVO --- */
-
-.park {
-    height: 80px;
-    background-color: #4caf50;
-    border-radius: 4px;
+.letra-btn {
+    background-color: #61dafb;
+    color: #282c34;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 1.1em;
+    border-radius: 5px;
+    transition: background-color 0.2s;
 }
 
-#action-buttons {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr; /* El primer botón es más grande */
-    gap: 10px;
+.letra-btn:hover:not([disabled]) {
+    background-color: #4dc4e0;
 }
 
-#build-house-btn {
-    padding: 15px;
-    font-size: 16px;
+.letra-btn:disabled {
+    background-color: #555;
+    color: #ccc;
+    cursor: not-allowed;
+}
+
+.mensaje {
+    font-size: 1.5em;
+    margin-bottom: 15px;
     font-weight: bold;
-    font-family: 'Poppins', sans-serif;
-    color: white;
+}
+
+.victoria { color: #4CAF50; }
+.derrota { color: #ff4757; }
+
+#letras-usadas span {
+    font-weight: bold;
+    color: #ccc;
+    margin-left: 10px;
+}
+
+.boton-reiniciar {
     background-color: #4CAF50;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-#build-house-btn:hover {
-    background-color: #45a049;
-}
-
-/* --- NUEVO: Estilo para botones secundarios --- */
-.secondary {
-    padding: 15px 10px;
-    font-size: 14px;
-    font-family: 'Poppins', sans-serif;
     color: white;
-    background-color: #607d8b; /* Gris azulado */
     border: none;
-    border-radius: 8px;
+    padding: 10px 20px;
+    font-size: 1.2em;
+    border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    margin-top: 20px;
+    display: none; /* Oculto por defecto, se muestra al final del juego */
 }
-
-.secondary:hover {
-    background-color: #546e7a;
-}
-/* --- FIN NUEVO --- */
