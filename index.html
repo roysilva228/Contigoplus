@@ -1,44 +1,68 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Juego del Ahorcado</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Panel de Medicamentos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/styles.css">
 </head>
+
 <body>
-    <div class="container">
-        <h1>El Ahorcado 🔪</h1>
+    <div class="layout">
+        <aside class="sidebar">
+            <header class="sidebar-image">
+                <a href="./index.html">
+                    <img src="./imgs/logo_contigo+.png" alt="">
+                </a>
+            </header>
+            <nav class="sidebar-list">
+                <ul>
+                    <li>
+                        <a href="./familiares.html"> <i class="fa-solid fa-people-group"></i> Familiares</a>
+                    </li>
+                    <li>
+                        <a href="./medicamentos.html"> <i class="fa-solid fa-capsules"></i> Medicamentos</a>
+                    </li>
+                    <li>
+                        <a href="./sintomas.html"> <i class="fa-solid fa-suitcase-medical"></i> Síntomas</a>
+                    </li>
+                    <li>
+                        <a href="./historial.html"> <i class="fa-solid fa-book-medical"></i> Historial</a>
+                    </li>
+                    <li>
+                        <a href="./datos-criticos.html"> <i class="fa-solid fa-triangle-exclamation"></i> Datos críticos</a>
+                    </li>
+                </ul>
+            </nav>
+            <footer class="sidebar-profile">
+                <div class="profile-icons">
+                    <a href="#"> <i class="fa-solid fa-gear"></i> </a>
+                    <a href="#"> <i class="fa-solid fa-search"></i> </a>
+                    <a href="#"> <i class="fa-solid fa-circle-question"></i> </a>
+                </div>
+                <div class="profile-emergencia">
+                    <button> EMERGENCIA </button>
+                </div>
+                <div class="profile-action">
+                    <a href="#">
+                        <i class="fa-solid fa-user"></i> Perfil
+                    </a>
+                </div>
+            </footer>
+        </aside>
 
-        <div id="horca-area">
-            <div id="cuerpo-entero" data-fallos="0">
-                <div id="cabeza" class="parte-oculta"></div>
-                <div id="cuerpo" class="parte-oculta"></div>
-                <div id="brazo-izquierdo" class="parte-oculta"></div>
-                <div id="brazo-derecho" class="parte-oculta"></div>
-                <div id="pierna-izquierda" class="parte-oculta"></div>
-                <div id="pierna-derecha" class="parte-oculta"></div>
-            </div>
-            <div id="base"></div>
-        </div>
-        
-        <div id="palabra-secreta" class="palabra-secreta">
-            </div>
+        <main class="contenido">
+            <header class="navbar"> 
+                
+            </header>
+            <section class="section-main">
+                <h5> Pagina de inicio </h5>
+            </section>
+            <footer class="footer">
+            </footer>
+        </main>
 
-        <div id="mensaje-juego" class="mensaje">¡Adivina la palabra!</div>
-        <div id="letras-usadas">Letras probadas: <span></span></div>
-        
-        <div id="teclado-letras" class="teclado">
-            </div>
-        
-        <button id="reiniciar-btn" class="boton-reiniciar">Reiniciar Juego</button>
-        
-        <div class="footer">
-            Creado por Roy's Silva
-        </div>
-        
     </div>
-    
-    <script src="script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.0/js/all.min.js"></script>
 </body>
-</html>
