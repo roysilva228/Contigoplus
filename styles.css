@@ -1,225 +1,278 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
 body {
-    font-family: Arial, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    background-color: #282c34;
-    color: #fff;
-    margin: 0;
+  font-family: "Segoe UI", sans-serif;
+  background-color: #f4f6f8;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  grid-template-areas: "sidebar contenido";
+  height: 100vh;
+}
+
+.sidebar {
+  grid-area: sidebar;
+  padding: 20px;
+
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 80px 1fr 140px;
+  grid-template-areas:
+    "sidebar-image"
+    "sidebar-list"
+    "sidebar-profile";
+  height: 100vh;
+
+  background-image: linear-gradient(to left, #3e93b2, #3b90b2, #115675);
+}
+
+.sidebar ul {
+  list-style: none;
+}
+
+.sidebar li {
+  margin: 15px 0;
+}
+
+.sidebar a {
+  color: white;
+  text-decoration: none;
+  font-size: 16px;
+}
+
+.sidebar-image {
+  grid-area: sidebar-image;
+}
+.sidebar-image img {
+  width: 100%;
+  object-fit: contain;
+  object-position: center;
+}
+.sidebar-list {
+  grid-area: sidebar-list;
+  border-top: 1px solid white;
+  border-bottom: 1px solid white;
+  max-height: calc(100vh - 220px);
+  height: 100%;
+  overflow-y: auto;
+}
+.sidebar-profile {
+  grid-area: sidebar-profile;
+}
+.profile-icons {
+  display: flex;
+  justify-content: space-around;
+  text-align: center;
+  padding: 0.5em 0;
+}
+.profile-icons li {
+  list-style: none;
+  text-align: center;
+}
+.profile-emergencia {
+  padding: 0.5em 0em;
+  text-align: center;
+}
+.profile-emergencia > button {
+  background-color: #ee3939;
+  color: white;
+  padding: 1em;
+  border: none;
+  border-radius: 12px;
+  width: 90%;
+  cursor: pointer;
+}
+.profile-emergencia > button:hover {
+  background-color: #bd2b2b;
+}
+.profile-action {
+  padding: 0.8em 0em;
+  text-align: center;
+}
+
+.contenido {
+  grid-area: contenido;
+  background-color: #ecf0f1;
+  overflow-y: auto;
+  max-width: 100%;
+
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 60px 1fr 40px;
+  grid-template-areas:
+    "navbar"
+    "section-main"
+    "footer";
+  height: 100vh;
+}
+
+.contenido h1 {
+  margin-bottom: 20px;
+}
+
+.navbar {
+  grid-area: navbar;
+  background-image: linear-gradient(to right, #3e93b2, #3b90b2, #115675);
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+}
+.section-main {
+  grid-area: section-main;
+  max-height: calc(100vh - 100px);
+  height: 100%;
+  overflow-y: auto;
+  padding: 2em;
+}
+.section-main > h5 {
+  text-align: center;
+  margin-bottom: 1em;
+}
+.footer {
+  grid-area: footer;
+  background-image: linear-gradient(to right, #3e93b2, #3b90b2, #115675);
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
 }
 
 .container {
-    background-color: #383c4a;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-    text-align: center;
-    width: 90%;
-    max-width: 600px;
+  padding: 2em;
+  border-radius: 1em;
+  width: 600px;
+  max-width: 100%;
+  margin: auto;
+  background-color: white;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.5);
 }
 
-h1 {
-    color: #61dafb;
+.container-group {
+  display: flex;
+  flex-direction: column;
+  max-width: 100%;
 }
 
-/* --- ESTILOS DE LA HORCA (MEJORADOS) --- */
-
-/* Contenedor y base horizontal */
-#horca-area {
-    position: relative;
-    width: 200px; /* Más ancho */
-    height: 250px; /* Más alto */
-    margin: 20px auto 40px auto;
+.container-input {
+  display: flex;
+  align-items: center;
+}
+.container-input > * {
+  flex-grow: 1;
+}
+.container-input > span {
+  color: red;
+  font-weight: bold;
+  align-items: center;
+  margin-left: 0.3em;
+  max-width: 10px;
+  width: 10px;
+  flex-shrink: 1;
+}
+.form-input {
+  border: 1px solid #dfd7d7;
+  height: 28px;
+  border-radius: 0.5em;
+  outline: none;
+  padding: 0 1em;
+  max-width: 100%;
+}
+.form-select {
+  border: 1px solid #dfd7d7;
+  height: 28px;
+  border-radius: 0.5em;
+  outline: none;
+  padding: 0 1em;
+  max-width: 100%;
 }
 
-/* Base horizontal (simula la plataforma) */
-#base {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%; 
-    height: 10px;
-    background: #8B4513; /* Marrón para madera */
-    border-radius: 5px;
+.container-double {
+  display: flex;
+  width: 100%;
+  max-width: 100%;
+  gap: 1em;
 }
 
-/* Poste vertical */
-#base::before {
-    content: '';
-    position: absolute;
-    bottom: 10px; 
-    left: 10px; 
-    width: 10px;
-    height: 240px;
-    background: #8B4513; 
-    border-radius: 5px;
+.container-double .container-group {
+  width: calc((100% / 2) - calc(100% / 70));
 }
 
-/* Viga superior (horizontal) */
-#base::after {
-    content: '';
-    position: absolute;
-    top: -5px;
-    left: 10px;
-    width: 150px; 
-    height: 10px;
-    background: #8B4513; 
-    border-radius: 5px;
-}
-
-/* La Cuerda (punto de sujeción del ahorcado) */
-#horca-area::before {
-    content: '';
-    position: absolute;
-    top: 5px;
-    left: 150px; 
-    width: 5px;
-    height: 35px; 
-    background: #D2B48C; /* Color cuerda */
-    border-radius: 0;
-}
-
-/* --- ESTILOS DEL CUERPO --- */
-.parte-oculta {
-    position: absolute;
-    background-color: #ff4757; 
-    border-radius: 50%; 
-    transition: opacity 0.3s;
-    opacity: 0; /* Oculto por defecto */
-}
-
-/* Posicionamiento del Cuerpo (Ajustado a la nueva horca) */
-#cabeza {
-    width: 30px;
-    height: 30px;
-    top: 40px;
-    left: 137.5px; /* Centrado en 152.5px */
-    border: 2px solid #ff4757;
-}
-
-#cuerpo {
-    width: 5px;
-    height: 50px;
-    top: 72px;
-    left: 151.5px;
-    background: #ff4757;
-    border-radius: 0;
-}
-
-/* Brazos */
-#brazo-izquierdo, #brazo-derecho {
-    width: 5px;
-    height: 30px;
-    top: 80px;
-    left: 151.5px;
-    background: #ff4757;
-    transform-origin: top;
-    border-radius: 0;
-}
-#brazo-izquierdo { transform: rotate(45deg); left: 138px; }
-#brazo-derecho { transform: rotate(-45deg); left: 165px; }
-
-/* Piernas */
-#pierna-izquierda, #pierna-derecha {
-    width: 5px;
-    height: 40px;
-    top: 120px;
-    left: 151.5px;
-    background: #ff4757;
-    transform-origin: top;
-    border-radius: 0;
-}
-#pierna-izquierda { transform: rotate(20deg); left: 144px; }
-#pierna-derecha { transform: rotate(-20deg); left: 159px; }
-
-
-/* Clase que JS añade para hacer visible la parte */
-.parte-visible {
-    opacity: 1;
-}
-
-/* --- ESTILOS DEL JUEGO --- */
-.palabra-secreta {
-    font-size: 2em;
-    letter-spacing: 15px;
-    margin-bottom: 30px;
-    min-height: 40px;
-}
-
-/* Teclado mejorado */
-.teclado {
+@media (max-width: 780px) {
+  .container-double {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 8px; /* Espacio limpio */
-    margin-top: 20px;
+    flex-direction: column;
+    gap: 0;
+  }
+  .container-double .container-group {
+    width: 100%;
+  }
 }
 
-.letra-btn {
-    background-color: #61dafb; /* Azul claro */
-    color: #282c34;
-    border: none;
-    padding: 10px 18px; 
-    cursor: pointer;
-    font-size: 1.1em;
-    border-radius: 8px; /* Bordes más redondeados */
-    transition: all 0.2s ease-in-out;
-    box-shadow: 0 4px #00a4d4; /* Sombra para efecto 3D/presionar */
-    margin: 3px;
+.container-button {
+  display: flex;
+  margin-top: 1em;
+  justify-content: end;
+  gap: 5px;
 }
 
-.letra-btn:hover:not([disabled]) {
-    background-color: #4dc4e0;
-    transform: translateY(-2px); 
+.container-msg {
+  display: flex;
+  align-items: center;
+  font-size: small;
+}
+.container-msg > span {
+  color: red;
+  font-weight: bold;
+  align-items: center;
+  margin-left: 0.3em;
+  max-width: 10px;
+  width: 10px;
+  flex-shrink: 1;
+}
+.btn-cancelar {
+  width: 100px;
+  border: none;
+  padding: 0 0.3em;
+  font-size: 14px;
+  height: 30px;
+  background-color: #5a7c8b;
+  border-radius: 0.4em;
+  color: white;
+  cursor: pointer;
+}
+.btn-cancelar:hover {
+  background-color: #384e57;
 }
 
-.letra-btn:active:not([disabled]) {
-    box-shadow: 0 1px #00a4d4; 
-    transform: translateY(2px); 
+.btn-guardar {
+  width: 100px;
+  border: none;
+  padding: 0 0.3em;
+  font-size: 14px;
+  height: 30px;
+  background-color: #3e93b2;
+  border-radius: 0.4em;
+  color: white;
+  cursor: pointer;
+}
+.btn-guardar:hover {
+  background-color: #337a94;
 }
 
-.letra-btn:disabled {
-    background-color: #555;
-    color: #ccc;
-    cursor: not-allowed;
-    box-shadow: none;
-}
-
-.mensaje {
-    font-size: 1.5em;
-    margin-bottom: 15px;
-    font-weight: bold;
-}
-
-.victoria { color: #4CAF50; }
-.derrota { color: #ff4757; }
-
-#letras-usadas span {
-    font-weight: bold;
-    color: #ccc;
-    margin-left: 10px;
-}
-
-.boton-reiniciar {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    font-size: 1.2em;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 20px;
-    display: none; 
-}
-
-/* --- ESTILOS DE LA FIRMA (FOOTER) --- */
-
-.footer {
-    margin-top: 30px;
-    padding-top: 15px;
-    border-top: 1px solid #444; 
-    color: #ccc;
-    font-size: 0.9em;
-    text-align: center;
+.form-area{
+    border: 1px solid #dfd7d7;
+    border-radius: 0.5em;
+    outline: none;
+    padding: 0 1em;
+    max-width: 100%;
+    height: 60px;
 }
